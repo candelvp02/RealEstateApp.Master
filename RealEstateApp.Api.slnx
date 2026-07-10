@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/source/" />
+  <Folder Name="/source/core/">
+    <Project Path="source/core/RealEstateApp.Core.Application/RealEstateApp.Core.Application.csproj" />
+    <Project Path="source/core/RealEstateApp.Core.Domain/RealEstateApp.Core.Domain.csproj" />
+  </Folder>
+  <Folder Name="/source/infrastructure/">
+    <Project Path="source/infrastructure/RealEstateApp.Infrastructure.Identity/RealEstateApp.Infrastructure.Identity.csproj" />
+    <Project Path="source/infrastructure/RealEstateApp.Infrastructure.Persistence/RealEstateApp.Infrastructure.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/source/presentation/" />
+  <Folder Name="/source/presentation/webapi/">
+    <Project Path="source/presentation/webapi/RealEstateApp.WebApi/RealEstateApp.WebApi.csproj" />
+  </Folder>
+</Solution>
