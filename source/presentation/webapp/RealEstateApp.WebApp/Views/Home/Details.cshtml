@@ -1,0 +1,84 @@
+﻿@model PropertyDetailsViewModel
+@{
+    ViewData["Title"] = $"Property {Model.Code}";
+}
+
+<div class="mb-3">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-real" style="border-color: var(--color-border); color: var(--color-text-muted);">
+        <i class="fa-solid fa-arrow-left me-1"></i>Back to listings
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div id="propertyCarousel" class="carousel slide card-real" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.ImagePaths.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="@Model.ImagePaths[i]" class="d-block w-100" style="height: 420px; object-fit: cover;" alt="Property image" />
+                    </div>
+                }
+                @if (Model.ImagePaths.Count == 0)
+                {
+                    <div class="carousel-item active">
+                        <img src="/images/no-image.png" class="d-block w-100" style="height: 420px; object-fit: cover;" alt="No image" />
+                    </div>
+                }
+            </div>
+            @if (Model.ImagePaths.Count > 1)
+            {
+                <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card-real p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge-property-type">@Model.PropertyTypeName</span>
+                <span class="text-muted small">Code: #@Model.Code</span>
+            </div>
+            <h2 class="mb-1">@Model.SaleTypeName</h2>
+            <p class="price-tag fs-3 mb-3">RD$ @Model.Price.ToString("N2")</p>
+
+            <div class="d-flex gap-4 mb-3 property-meta fs-6">
+                <span><i class="fa-solid fa-bed"></i>@Model.Bedrooms Bedrooms</span>
+                <span><i class="fa-solid fa-bath"></i>@Model.Bathrooms Bathrooms</span>
+                <span><i class="fa-solid fa-ruler-combined"></i>@Model.Size m²</span>
+            </div>
+
+            <h6 class="fw-bold mt-3">Description</h6>
+            <p class="text-muted">@Model.Description</p>
+
+            @if (Model.Improvements.Any())
+            {
+                <h6 class="fw-bold mt-3">Improvements</h6>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    @foreach (var improvement in Model.Improvements)
+                    {
+                        <span class="badge-property-type">@improvement</span>
+                    }
+                </div>
+            }
+
+            <hr />
+
+            <h6 class="fw-bold">Listing Agent</h6>
+            <div class="d-flex align-items-center gap-3 mt-2">
+                <img src="@(string.IsNullOrEmpty(Model.AgentProfilePicturePath) ? "/images/no-avatar.png" : Model.AgentProfilePicturePath)"
+                     class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;" alt="@Model.AgentFullName" />
+                <div>
+                    <div class="fw-semibold">@Model.AgentFullName</div>
+                    <div class="text-muted small"><i class="fa-solid fa-phone me-1"></i>@Model.AgentPhone</div>
+                    <div class="text-muted small"><i class="fa-solid fa-envelope me-1"></i>@Model.AgentEmail</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

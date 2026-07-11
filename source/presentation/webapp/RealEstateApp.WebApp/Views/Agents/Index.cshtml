@@ -1,0 +1,47 @@
+﻿@model List<AgentListItemViewModel>
+@{
+    ViewData["Title"] = "Our Agents";
+}
+
+<h2 class="section-title"><i class="fa-solid fa-user-tie me-2"></i>Our Real Estate Agents</h2>
+
+<div class="filter-bar">
+    <form asp-controller="Agents" asp-action="Index" method="get" class="row g-3 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label">Search by Name or Last Name</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Maria Gomez" value="@ViewBag.SearchName" />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary-real"><i class="fa-solid fa-magnifying-glass me-1"></i>Search</button>
+            <a asp-controller="Agents" asp-action="Index" class="btn btn-outline-real" style="border-color: var(--color-border); color: var(--color-text-muted);">
+                <i class="fa-solid fa-rotate-left me-1"></i>Clear
+            </a>
+        </div>
+    </form>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="empty-state">
+        <i class="fa-solid fa-user-slash"></i>
+        <p>@ViewBag.NoResultsMessage</p>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var agent in Model)
+        {
+            <div class="col-md-3">
+                <a asp-controller="Agents" asp-action="Properties" asp-route-id="@agent.Id" class="text-decoration-none text-reset">
+                    <div class="card-real text-center p-4">
+                        <img src="@(string.IsNullOrEmpty(agent.ProfilePicturePath) ? "/images/no-avatar.png" : agent.ProfilePicturePath)"
+                             class="rounded-circle mx-auto mb-3" style="width: 100px; height: 100px; object-fit: cover;" alt="@agent.FirstName @agent.LastName" />
+                        <h5 class="mb-0">@agent.FirstName @agent.LastName</h5>
+                        <span class="text-muted small">Real Estate Agent</span>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

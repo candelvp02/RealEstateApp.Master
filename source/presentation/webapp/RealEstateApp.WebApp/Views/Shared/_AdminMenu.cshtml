@@ -1,0 +1,30 @@
+﻿<ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1 flex-wrap">
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="AdminHome" asp-action="Index">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="AdminAgents" asp-action="Index">Agents</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="AdminUsers" asp-action="Index">Admins</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="AdminDevelopers" asp-action="Index">Developers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="PropertyTypes" asp-action="Index">Property Types</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="SaleTypes" asp-action="Index">Sale Types</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Improvements" asp-action="Index">Improvements</a>
+    </li>
+    <li class="nav-item ms-lg-2">
+        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+            <button type="submit" class="btn btn-outline-real" style="border-color: rgba(255,255,255,0.5); color: #fff;">
+                <i class="fa-solid fa-right-from-bracket me-1"></i>Sign Out
+            </button>
+        </form>
+    </li>
+</ul>
