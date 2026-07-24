@@ -1,0 +1,97 @@
+﻿@using RealEstateApp.Core.Application.Dtos.Property
+@{
+    var property = ViewBag.Property as PropertyDto;
+    ViewData["Title"] = $"Property {property!.Code}";
+    var conversationClients = ViewBag.ConversationClients as List<(string ClientId, string ClientName)>;
+    var offerClients = ViewBag.OfferClients as List<(string ClientId, string ClientName, int Count, decimal LastAmount, string LastStatus)>;
+}
+
+<div class="mb-3">
+    <a asp-controller="AgentProperties" asp-action="AgentHome" class="btn btn-outline-real" style="border-color: var(--color-border); color: var(--color-text-muted);">
+        <i class="fa-solid fa-arrow-left me-1"></i>Back to my properties
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-5">
+        <img src="@(property.Images.Select(i => i.Path).FirstOrDefault() ?? "/images/no-image.png")"
+             class="card-real w-100" style="height: 280px; object-fit: cover;" alt="@property.PropertyTypeName" />
+    </div>
+    <div class="col-lg-7">
+        <div class="card-real p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge-property-type">@property.PropertyTypeName</span>
+                @if (property.Status == "Sold")
+                {
+                    <span class="badge-status-sold">SOLD</span>
+                }
+                else
+                {
+                    <span class="badge-status-available">AVAILABLE</span>
+                }
+            </div>
+            <h3>@property.SaleTypeName - Code #@property.Code</h3>
+            <p class="price-tag fs-4">RD$ @property.Price.ToString("N2")</p>
+            <div class="property-meta d-flex gap-3">
+                <span><i class="fa-solid fa-bed"></i>@property.Bedrooms</span>
+                <span><i class="fa-solid fa-bath"></i>@property.Bathrooms</span>
+                <span><i class="fa-solid fa-ruler-combined"></i>@property.Size m²</span>
+            </div>
+            <p class="text-muted mt-3">@property.Description</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card-real p-4">
+            <h5 class="mb-3"><i class="fa-solid fa-comments me-2"></i>Client Conversations</h5>
+            @if (conversationClients is null || conversationClients.Count == 0)
+            {
+                <p class="text-muted">No clients have started a conversation about this property yet.</p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var (clientId, clientName) in conversationClients)
+                    {
+                        <a asp-controller="AgentProperties" asp-action="Conversation" asp-route-propertyId="@property.Id" asp-route-clientId="@clientId"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span><i class="fa-solid fa-user me-2"></i>@clientName</span>
+                            <i class="fa-solid fa-chevron-right text-muted"></i>
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-real p-4">
+            <h5 class="mb-3"><i class="fa-solid fa-hand-holding-dollar me-2"></i>Offers Received</h5>
+            @if (offerClients is null || offerClients.Count == 0)
+            {
+                <p class="text-muted">No offers have been made for this property yet.</p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var (clientId, clientName, count, lastAmount, lastStatus) in offerClients)
+                    {
+                        <a asp-controller="AgentProperties" asp-action="ClientOffers" asp-route-propertyId="@property.Id" asp-route-clientId="@clientId"
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fa-solid fa-user me-2"></i>@clientName</span>
+                                <span class="badge-property-type">@count offer(s)</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <span class="text-muted small">Last: RD$ @lastAmount.ToString("N2")</span>
+                                <span class="text-muted small">@lastStatus</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

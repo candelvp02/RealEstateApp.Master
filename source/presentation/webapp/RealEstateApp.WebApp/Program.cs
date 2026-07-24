@@ -14,7 +14,15 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddPersistenceLayer(builder.Configuration);
 builder.Services.AddIdentityLayer(builder.Configuration);
 
-// La WebApp usa autenticación por Cookies, no JWT
+// auth con cookies 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -22,6 +30,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromHours(2);
     options.SlidingExpiration = true;
 });
+
+builder.Services.AddScoped<RealEstateApp.Core.Application.Interfaces.Infrastructure.IFileService, RealEstateApp.WebApp.Services.FileService>();
 
 builder.Services.AddControllersWithViews();
 

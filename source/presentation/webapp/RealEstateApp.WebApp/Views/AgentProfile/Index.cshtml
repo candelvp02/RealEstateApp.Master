@@ -1,0 +1,70 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="form-container-real">
+            <div class="text-center mb-4">
+                <img src="@(string.IsNullOrEmpty(Model.CurrentProfilePicturePath) ? "/images/no-avatar.png" : Model.CurrentProfilePicturePath)"
+                     class="rounded-circle mb-3" style="width: 110px; height: 110px; object-fit: cover;" alt="Profile picture" />
+                <h3>My Profile</h3>
+                <p class="text-muted">Update your personal information and profile picture.</p>
+            </div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <form asp-controller="AgentProfile" asp-action="Index" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="CurrentProfilePicturePath" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Phone" class="form-label"></label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ProfilePicture" class="form-label">New Profile Picture (optional)</label>
+                        <input asp-for="ProfilePicture" type="file" class="form-control" accept=".jpg,.jpeg,.png" />
+                        <span asp-validation-for="ProfilePicture" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-accent flex-grow-1">
+                        <i class="fa-solid fa-floppy-disk me-1"></i>Save Changes
+                    </button>
+                    <a asp-controller="AgentProperties" asp-action="AgentHome" class="btn btn-outline-real" style="border-color: var(--color-border); color: var(--color-text-muted);">
+                        Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,85 @@
+﻿@model List<OfferViewModel>
+@{
+    ViewData["Title"] = $"Offers from {ViewBag.ClientName}";
+}
+
+<div class="mb-3">
+    <a asp-controller="AgentProperties" asp-action="Details" asp-route-id="@ViewBag.PropertyId" class="btn btn-outline-real" style="border-color: var(--color-border); color: var(--color-text-muted);">
+        <i class="fa-solid fa-arrow-left me-1"></i>Back to property
+    </a>
+</div>
+
+<div class="card-real p-4">
+    <h5 class="mb-1"><i class="fa-solid fa-hand-holding-dollar me-2"></i>Offers from @ViewBag.ClientName</h5>
+    <p class="text-muted small mb-4">Property Code #@ViewBag.PropertyCode</p>
+
+    @if (Model.Count == 0)
+    {
+        <p class="text-muted">This client has not made any offers for this property.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var offer in Model)
+                    {
+                        <tr>
+                            <td>@offer.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</td>
+                            <td class="fw-semibold">RD$ @offer.Amount.ToString("N2")</td>
+                            <td>
+                                @if (offer.Status == "Pending")
+                                {
+                                    <span class="badge-property-type">Pending</span>
+                                }
+                                else if (offer.Status == "Accepted")
+                                {
+                                    <span class="badge-status-available">Accepted</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status-sold">Rejected</span>
+                                }
+                            </td>
+                            <td>
+                                @if (offer.Status == "Pending")
+                                {
+                                    <div class="d-flex gap-2">
+                                        <form asp-controller="AgentProperties" asp-action="AcceptOffer" method="post" class="d-inline">
+                                            <input type="hidden" name="offerId" value="@offer.Id" />
+                                            <input type="hidden" name="propertyId" value="@ViewBag.PropertyId" />
+                                            <input type="hidden" name="clientId" value="@Context.Request.Query["clientId"]" />
+                                            <button type="submit" class="btn btn-sm" style="background-color: var(--color-success); color: #fff; border-radius: 8px;">
+                                                <i class="fa-solid fa-check me-1"></i>Accept
+                                            </button>
+                                        </form>
+                                        <form asp-controller="AgentProperties" asp-action="RejectOffer" method="post" class="d-inline">
+                                            <input type="hidden" name="offerId" value="@offer.Id" />
+                                            <input type="hidden" name="propertyId" value="@ViewBag.PropertyId" />
+                                            <input type="hidden" name="clientId" value="@Context.Request.Query["clientId"]" />
+                                            <button type="submit" class="btn btn-sm" style="background-color: var(--color-danger); color: #fff; border-radius: 8px;">
+                                                <i class="fa-solid fa-xmark me-1"></i>Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Already answered</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

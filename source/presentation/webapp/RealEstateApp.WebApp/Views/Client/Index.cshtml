@@ -1,0 +1,95 @@
+﻿@model List<PropertyListItemViewModel>
+@{
+    ViewData["Title"] = "Client Home";
+    var filter = ViewBag.Filter as PropertyFilterViewModel;
+}
+
+<section class="hero-section text-center mb-4">
+    <div class="container">
+        <h1><i class="fa-solid fa-key me-2"></i>Find Your Next Property</h1>
+        <p class="mb-0">Browse available properties and mark your favorites.</p>
+    </div>
+</section>
+
+<div class="filter-bar">
+    <form asp-controller="Client" asp-action="Index" method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Property Code</label>
+            <input type="text" name="Code" class="form-control" value="@filter?.Code" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Property Type</label>
+            <select name="PropertyTypeId" class="form-select" asp-items="@(filter?.PropertyTypes?.Select(pt => new SelectListItem(pt.Name, pt.Id.ToString())))">
+                <option value="">All types</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Min. Price (DOP)</label>
+            <input type="number" step="0.01" name="MinPrice" class="form-control" value="@filter?.MinPrice" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Max. Price (DOP)</label>
+            <input type="number" step="0.01" name="MaxPrice" class="form-control" value="@filter?.MaxPrice" />
+        </div>
+        <div class="col-md-1">
+            <label class="form-label">Beds</label>
+            <input type="number" name="Bedrooms" class="form-control" value="@filter?.Bedrooms" />
+        </div>
+        <div class="col-md-1">
+            <label class="form-label">Baths</label>
+            <input type="number" name="Bathrooms" class="form-control" value="@filter?.Bathrooms" />
+        </div>
+        <div class="col-12 d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-primary-real"><i class="fa-solid fa-magnifying-glass me-1"></i>Search / Filter</button>
+            <a asp-controller="Client" asp-action="Index" class="btn btn-outline-real" style="border-color: var(--color-border); color: var(--color-text-muted);">
+                <i class="fa-solid fa-rotate-left me-1"></i>Clear Filters
+            </a>
+        </div>
+    </form>
+</div>
+
+<h4 class="section-title">Available Properties</h4>
+
+@if (Model.Count == 0)
+{
+    <div class="empty-state">
+        <i class="fa-solid fa-house-circle-xmark"></i>
+        <p>@(ViewBag.NoResultsMessage ?? "No available properties were found.")</p>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var property in Model)
+        {
+            <div class="col-md-4">
+                <div class="card-real position-relative">
+                    <form asp-controller="Client" asp-action="ToggleFavorite" method="post" class="position-absolute" style="top: 12px; right: 12px; z-index: 2;">
+                        <input type="hidden" name="propertyId" value="@property.Id" />
+                        <input type="hidden" name="returnAction" value="Index" />
+                        <button type="submit" class="favorite-btn @(property.IsFavorite ? "is-favorite" : "")">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                    </form>
+                    <a asp-controller="Client" asp-action="Details" asp-route-id="@property.Id" class="text-decoration-none text-reset">
+                        <img src="@(string.IsNullOrEmpty(property.MainImagePath) ? "/images/no-image.png" : property.MainImagePath)"
+                             class="card-img-top" alt="@property.PropertyTypeName" />
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge-property-type">@property.PropertyTypeName</span>
+                                <span class="text-muted small">#@property.Code</span>
+                            </div>
+                            <h5 class="card-title">@property.SaleTypeName</h5>
+                            <p class="price-tag mb-2">RD$ @property.Price.ToString("N2")</p>
+                            <div class="property-meta d-flex gap-3">
+                                <span><i class="fa-solid fa-bed"></i>@property.Bedrooms</span>
+                                <span><i class="fa-solid fa-bath"></i>@property.Bathrooms</span>
+                                <span><i class="fa-solid fa-ruler-combined"></i>@property.Size m²</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,54 @@
+﻿@model List<PropertyListItemViewModel>
+@{
+    ViewData["Title"] = "Agent Home";
+}
+
+<h2 class="section-title"><i class="fa-solid fa-briefcase me-2"></i>My Properties</h2>
+
+@if (Model.Count == 0)
+{
+    <div class="empty-state">
+        <i class="fa-solid fa-house-circle-xmark"></i>
+        <p>@ViewBag.NoPropertiesMessage</p>
+        <a asp-controller="AgentProperties" asp-action="Index" class="btn btn-accent mt-2">
+            <i class="fa-solid fa-plus me-1"></i>Create your first property
+        </a>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var property in Model)
+        {
+            <div class="col-md-4">
+                <div class="card-real position-relative">
+                    @if (property.Status == "Sold")
+                    {
+                        <span class="badge-status-sold position-absolute" style="top: 12px; right: 12px; z-index: 2;">SOLD</span>
+                    }
+                    else
+                    {
+                        <span class="badge-status-available position-absolute" style="top: 12px; right: 12px; z-index: 2;">AVAILABLE</span>
+                    }
+                    <a asp-controller="AgentProperties" asp-action="Details" asp-route-id="@property.Id" class="text-decoration-none text-reset">
+                        <img src="@(string.IsNullOrEmpty(property.MainImagePath) ? "/images/no-image.png" : property.MainImagePath)"
+                             class="card-img-top" alt="@property.PropertyTypeName" />
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge-property-type">@property.PropertyTypeName</span>
+                                <span class="text-muted small">#@property.Code</span>
+                            </div>
+                            <h5 class="card-title">@property.SaleTypeName</h5>
+                            <p class="price-tag mb-2">RD$ @property.Price.ToString("N2")</p>
+                            <div class="property-meta d-flex gap-3">
+                                <span><i class="fa-solid fa-bed"></i>@property.Bedrooms</span>
+                                <span><i class="fa-solid fa-bath"></i>@property.Bathrooms</span>
+                                <span><i class="fa-solid fa-ruler-combined"></i>@property.Size m²</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+}
